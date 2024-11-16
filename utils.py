@@ -1,8 +1,33 @@
+import os
 import PIL
 import cv2
 import torch
 import numpy as np
 from PIL import ImageEnhance, Image
+from conch.open_clip_custom import create_model_from_pretrained
+
+# Global variables for the conch model
+conch_model = None
+conch_preprocess = None
+
+
+def convert_to_numpy(image):
+    """
+    Convert either an image path, a PIL image, a torch tensor or a numpy array to a numpy array.
+
+    :param image: The image to convert
+    :return: The numpy array
+    """
+    if isinstance(image, str):
+        return np.array(Image.open(image))
+    elif isinstance(image, Image.Image):
+        return np.array(image)
+    elif isinstance(image, torch.Tensor):
+        return image.permute(1, 2, 0).cpu().numpy()
+    elif isinstance(image, np.ndarray):
+        return image
+    else:
+        raise ValueError("Invalid image type. Must be either a path, PIL image, torch tensor or numpy array.")
 
 
 def dice_score(gray_mask, gray_image):
@@ -26,7 +51,34 @@ def dice_score(gray_mask, gray_image):
     return 2 * intersection / combined
 
 
-def get_mask_quality(image: torch.Tensor, mask: torch.Tensor) -> float:
+def load_model(hf_token=None):
+    global conch_model, conch_preprocess
+
+    if os.environ.get("HF_TOKEN") is None and hf_token is None:
+        raise ValueError("You need to provide a Hugging Face API token to load the model.")
+
+    conch_model, conch_preprocess = create_model_from_pretrained(
+        'conch_ViT-B-16',
+        "hf_hub:MahmoodLab/conch",
+        hf_auth_token=hf_token
+    )
+
+
+def image_to_embedding(image):
+    # ensure that the conch model is loaded
+    if conch_model is None or conch_preprocess is None:
+        raise ValueError("You need to load the model first (call load_model(<your hugging face token>)).")
+
+    image = convert_to_numpy(image)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image = Image.fromarray(image)
+    image = conch_preprocess(image).unsqueeze(0)
+    with torch.inference_mode():
+        image_embs = conch_model.encode_image(image, proj_contrast=False, normalize=False)
+    return image_embs
+
+
+def get_mask_quality(image, mask) -> float:
     """
     Estimates the quality of a mask by comparing it to the original image using
     techniques shown in data_visualization.ipynb. Simply, this is done by comparing how much the colored
@@ -35,12 +87,12 @@ def get_mask_quality(image: torch.Tensor, mask: torch.Tensor) -> float:
 
     Note: If the mask and image is completely empty, the quality is set to 1 as the mask is perfect.
 
-    :param image: The original BGR image
+    :param image: The original image
     :param mask: The mask to be evaluated
     :return: The quality of the mask
     """
-    # permute the image tensor to (H, W, C)
-    image = image.permute(1, 2, 0).cpu().numpy()
+    image = convert_to_numpy(image)
+    mask = convert_to_numpy(mask)
 
     # Apply blur to make close dark random colors blend into colors that are closer to the grayscale
     image = cv2.blur(image, (3, 3))
@@ -53,7 +105,7 @@ def get_mask_quality(image: torch.Tensor, mask: torch.Tensor) -> float:
         axis=2)
 
     # Get the dice score between the gray mask and the gray image and return it as the quality
-    return dice_score(gray_mask, mask.cpu().numpy())
+    return dice_score(gray_mask, mask)
 
 
 def crop_black_borders(image: Image, threshold=30):
@@ -92,35 +144,37 @@ def crop_black_borders(image: Image, threshold=30):
     return cropped_image
 
 
-def _preprocess_image_new(image: torch.Tensor) -> torch.Tensor:
+def _preprocess_image_new(image) -> np.ndarray:
     """
     Preprocesses an image to be passed through mask2former using the new technique.
 
-    :param image: The BRG image to be preprocessed
+    :param image: The image to be preprocessed
     :return: The preprocessed image
     """
+    raise NotImplementedError("The new technique is not implemented yet.")
+    #image = convert_to_numpy(image)
+    #return image
 
 
-def _preprocess_image_current(image: torch.Tensor) -> torch.Tensor:
+def _preprocess_image_current(image) -> np.ndarray:
     """
     Preprocesses an image to be passed through mask2former using the current technique.
 
-    :param image: The BGR image to be preprocessed
+    :param image: The image to be preprocessed
     :return: The preprocessed image
     """
-    image_np = image.permute(1, 2, 0).cpu().numpy()
-    image = Image.fromarray(image_np).convert("RGB")
-    cropped_image = crop_black_borders(image_np)
+    image = convert_to_numpy(image)
+    image = Image.fromarray(image).convert("RGB")
+    cropped_image = crop_black_borders(image)
 
     # Significantly enhance contrast
     enhancer = ImageEnhance.Contrast(cropped_image)
     enhanced_image = enhancer.enhance(10).convert("BGR")
 
-    # Convert to tensor
-    return torch.tensor(np.array(enhanced_image)).permute(2, 0, 1)
+    return np.array(enhanced_image)
 
 
-def preprocess_mask(mask: torch.Tensor, to_binary=True) -> torch.Tensor:
+def preprocess_mask(mask, to_binary=True) -> np.ndarray:
     """
     Preprocesses a mask to be passed through mask2former.
 
@@ -128,21 +182,22 @@ def preprocess_mask(mask: torch.Tensor, to_binary=True) -> torch.Tensor:
     :param to_binary: Whether to convert the mask to binary or to 0, 255
     :return: The preprocessed mask
     """
-    gray_mask = mask.mean(dim=2)
+    mask = convert_to_numpy(mask)
+    gray_mask = np.mean(mask, axis=2)  # Convert to grayscale by averaging channels
     if to_binary:
-        return (gray_mask > 0).float()
+        return (gray_mask > 0).astype(np.float32)
     else:
-        return (gray_mask > 0).float() * 255
+        return ((gray_mask > 0) * 255).astype(np.float32)
 
 
-def preprocess_image(image: torch.Tensor, use_new_technique: bool = False) -> torch.Tensor:
+def preprocess_image(image, use_new_technique: bool = False) -> np.ndarray:
     """
-    Preprocesses a BGR image to be passed through mask2former.
+    Preprocesses a image to be passed through mask2former.
     If use_new_technique is True, the new technique will be used.
     This new technique removes black borders from the image by replacing them with white pixels
     whereas the old technique crops the image which generates a smaller image with arbitrary dimensions.
 
-    :param image: The BGR image to be preprocessed
+    :param image: The image to be preprocessed
     :param use_new_technique: Whether to use the new technique or not
     :return: The preprocessed image
     """
