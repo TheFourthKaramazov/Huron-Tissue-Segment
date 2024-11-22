@@ -5,3 +5,7 @@
 # ignore data except the huron_data_link.txt file
 data/*
 !data/huron_data_link.txt
+
+# ignore everything in accelerate fine tune except for python
+Accelerate_Fine_Tuning/*
+!Accelerate_Fine_Tuning/*.py
