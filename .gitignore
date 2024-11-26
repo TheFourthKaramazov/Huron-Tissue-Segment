@@ -1,0 +1,14 @@
+.env
+.venv/
+.idea/
+
+# ignore data except the huron_data_link.txt file
+data/
+
+# ignore models -> too large to push with git
+models/
+
+# ignore everything in accelerate fine tune except for python
+Accelerate_Fine_Tuning/*
+!Accelerate_Fine_Tuning/*.py
+!Accelerate_Fine_Tuning/*.yaml
