@@ -10,11 +10,13 @@ This project demonstrates a tissue segmentation pipeline built using the **Mask2
 
 ### 2. Refer to *usage_example.ipynb* for full model training. Execute each cell one after another. (dataset is divided by 50 so training will be fast)
 
-### 3. Refer to *inference_example.ipynb* for inferencing only.  Execute each cell one after another. Model must be downloaded from google link (too large for github). Ensure path and name correpond to loading script.
+### 3. Refer to *full_model_train_google_colab.ipynb* for training on full dataset with grid search parameters which resulted in best performing model. (8 hours training time on L4 GPU)
 
-### 4. Both scripts plot final results for comparison of original image, predicted mask, ground-truth mask for evaluation.
+### 4. Refer to *inference_example.ipynb* for inferencing only.  Execute each cell one after another. Model must be downloaded from google link (too large for github). Ensure path and name correpond to loading script.
 
-### 5. Both notebooks rely on data being downloaded and set according to the dataset structure outlined below
+### 5. Both scripts plot final results for comparison of original image, predicted mask, ground-truth mask for evaluation.
+
+### 6. All notebooks rely on data being downloaded and set according to the dataset structure outlined below (google colab notebook for full model training relys mounted drive, refer to corresponding file)
 
 
 
