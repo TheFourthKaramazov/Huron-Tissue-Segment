@@ -62,17 +62,29 @@ The project uses the **Mask2Former pretrained model** (`facebook/mask2former-swi
 
 1. Preprocess Data: Ensure images and masks are aligned and formatted. Use the `verify_data_alignment()` function to validate consistency.
 2. Train the Model: Use the `train()` function to fine-tune the Mask2Former model on your dataset.
-3. Save/Load the Model: Save the model and processor using the provided utility functions.
-4. Run Inference: Perform predictions and visualize results using `infer_and_display()`.
+3. Plot metrics over epochs (loss, mIoU, dice, pixel accuracy) with `visualize_training_metrics()` and `visualize_validation_metrics()` from `data_visualization.py`.
+4. Save/Load the Model: Save the model and processor using the provided utility functions.
+5. Run Inference: Perform predictions and visualize results using `infer_and_display()`.
 
 #### Note: Please refer to usage_example.ipynb for full details.
 
 ## Performance and Metrics
 
-- **Metrics**:
-- **Loss Function**:
+- **Metrics**: Pixel accuracy, mIoU, dice coefficient.
+- **Loss Function**: Best performance with **Scaled Dice Loss custom class** (Details in loss.py)
 
 ##### Note: for this task, the qualitative metrics are more important than the quantiative metrics. Use infer_and_display() to inspect your results. You will notice a nearly perfect match with predictions and ground truths.
+
+
+### Hyper-parameter Tuning
+
+JUSTIN FILL IN HERE
+
+
+### Accelerated Training 
+
+BRIAC FILL IN HERE
+
 
 ## Requirements
 
