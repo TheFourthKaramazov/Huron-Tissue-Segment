@@ -101,6 +101,7 @@ BRIAC FILL IN HERE
 
 ###### Note: although these imports are required, they are taken care of in the python files and usage_example.ipynb file. Only the libraries must be installed on your system.
 
+```python
 import matplotlib.pyplot as plt
 import torch
 import numpy as np
@@ -114,7 +115,7 @@ from torchvision import transforms
 import os
 import gc
 from transformers import Mask2FormerForUniversalSegmentation, Mask2FormerImageProcessor
-
+```
 ## References
 
 1. [Mask2Former on Hugging Face](https://huggingface.co/facebook/mask2former)
