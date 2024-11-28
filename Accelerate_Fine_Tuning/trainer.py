@@ -16,8 +16,7 @@ def train(accelerator, model, train_loader, val_loader, criterion, optimizer, ep
 
         for pixel_values, masks in tqdm(train_loader, desc=f"Epoch [{epoch + 1}/{epochs}] Training",
                                         disable=not accelerator.is_main_process):
-            outputs = model(pixel_values=pixel_values)
-
+            outputs = model(pixel_values=pixel_values.float())
             tissue_logits = outputs.masks_queries_logits[:, 1]
 
             # Resize logits to match masks
@@ -48,8 +47,8 @@ def train(accelerator, model, train_loader, val_loader, criterion, optimizer, ep
         # Checkpointing and logging
         if accelerator.is_main_process:
             logging.info(
-                f"Epoch {epoch + 1}/{epochs}], Training Loss: {avg_loss:.4f},"
-                f"Validation Loss: {avg_val_loss:.4f}, IoU: {avg_iou:.4f}, Dice: {avg_dice:.4f}")
+                f"Epoch [{epoch + 1}/{epochs}], Training Loss: {avg_loss:.4f},"
+                f" Validation Loss: {avg_val_loss:.4f}, IoU: {avg_iou:.4f}, Dice: {avg_dice:.4f}")
 
             best_iou = save_checkpoint(accelerator, model, experiment_dir, avg_iou, best_iou)
 
@@ -74,10 +73,11 @@ def validate(accelerator, model, val_loader, criterion):
     total_iou = 0.0
     total_dice = 0.0
     num_samples = 0
+
     with torch.no_grad():
         for images, ground_truth_masks in tqdm(val_loader, desc="Validation", disable=not accelerator.is_main_process):
             # Process inputs and get model outputs
-            outputs = model(pixel_values=images)
+            outputs = model(pixel_values=images.float())
             tissue_logits = outputs.masks_queries_logits[:, 1]
 
             # Resize logits to match ground truth mask size
@@ -128,10 +128,11 @@ def test(accelerator, model, test_loader, criterion):
     total_iou = 0.0
     total_dice = 0.0
     num_samples = 0
+
     with torch.no_grad():
-        for images, ground_truth_masks in tqdm(test_loader, desc="Validation", disable=not accelerator.is_main_process):
+        for images, ground_truth_masks in tqdm(test_loader, desc="Testing", disable=not accelerator.is_main_process):
             # Process inputs and get model outputs
-            outputs = model(pixel_values=images)
+            outputs = model(pixel_values=images.float())
             tissue_logits = outputs.masks_queries_logits[:, 1]
 
             # Resize logits to match ground truth mask size
@@ -175,6 +176,6 @@ def save_checkpoint(accelerator, model, experiment_dir, iou, best_iou):
         checkpoint_path = os.path.join(experiment_dir, f"best_iou_checkpoint.pt")
         unwrapped_model = accelerator.unwrap_model(model)
         unwrapped_model.save_pretrained(checkpoint_path)
-        logging.info(f"IOU has increased to {best_iou}, saved new model checkpoint.")
+        logging.info(f"IOU has increased to {best_iou:.4f}, saved new model checkpoint.")
 
     return best_iou

@@ -12,19 +12,19 @@ def clear_model_and_cache():
     torch.cuda.empty_cache()
 
 
-def create_mask2former():
+def create_mask2former(num_labels=2):
     # Load the image processor with relevant settings
     image_processor = Mask2FormerImageProcessor.from_pretrained(
         "facebook/mask2former-swin-base-IN21k-ade-semantic",
-        do_rescale=True,  # Skip rescaling if images are already normalized
-        do_normalize=False,  # Normalize images if needed
-        do_resize=True  # Skip resizing as we're handling this during preprocessing
+        do_rescale=False,
+        do_normalize=False,
+        do_resize=False
     )
 
     # Load the Mask2Former model for binary segmentation
     model = Mask2FormerForUniversalSegmentation.from_pretrained(
         "facebook/mask2former-swin-base-IN21k-ade-semantic",
-        num_labels=1,  # Binary segmentation (background and tissue)
+        num_labels=num_labels,  # Binary segmentation (background and tissue)
         ignore_mismatched_sizes=True  # Allow resizing of model parameters if dimensions do not match
     )
 

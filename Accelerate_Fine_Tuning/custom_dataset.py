@@ -5,7 +5,6 @@ import torch
 from torchvision import transforms
 
 
-
 class TissueDataset(Dataset):
     def __init__(self, image_files, mask_files, augmentations=None, image_processor=None, border_threshold=30):
         self.image_files = image_files
@@ -26,6 +25,9 @@ class TissueDataset(Dataset):
         if self.augmentations:
             image = self.augmentations(image)
             mask = self.augmentations(mask)
+        else:
+            mask_transform = transforms.Compose([transforms.ToTensor()])
+            mask = mask_transform(mask)
 
         # Process image using the image processor
         if self.image_processor:
@@ -45,19 +47,16 @@ def prepare_dataloaders(image_folder, mask_folder, hparams, image_processor):
 
     # Image augmentations
     augmentations = transforms.Compose([
-        transforms.RandomHorizontalFlip(p=0.5),
-        transforms.RandomVerticalFlip(p=0.5),
         transforms.RandomRotation(degrees=15),
-        transforms.RandomResizedCrop(size=(256, 256), scale=(0.8, 1.0)),
         transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1),
-        transforms.ToTensor(),
+        transforms.ToTensor()
     ])
 
     # Create dataset and dataloaders
     dataset = TissueDataset(
         image_files=image_files,
         mask_files=mask_files,
-        augmentations=augmentations,
+        #augmentations=augmentations,
         image_processor=image_processor,
         border_threshold=hparams["border_threshold"]
     )

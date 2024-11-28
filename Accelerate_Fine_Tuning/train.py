@@ -9,7 +9,7 @@ import logging
 from model import clear_model_and_cache, create_mask2former
 from utils import *
 from trainer import train, test
-
+from custom_dataset import prepare_dataloaders
 
 def main():
     # Initialize accelerator
@@ -32,7 +32,7 @@ def main():
     torch.manual_seed(hparams["seed"])
 
     # Create model and image processor
-    image_processor, model = create_mask2former()
+    image_processor, model = create_mask2former(hparams["num_labels"])
 
     # Freeze required layers and print model parameters
     freeze_and_prepare(model, accelerator, hparams)
@@ -49,10 +49,10 @@ def main():
                                   "results", hparams["experiment_name"], str(hparams["seed"]))
 
     # Create experiment folder and setup logging
-    setup_experiment_directories(experiment_dir)
+    setup_experiment_directories(experiment_dir, accelerator, hparam_file)
 
     # Create criterion, optimizer
-    optimizer = optim.AdamW(model.parameters(), lr=hparams["lr"])
+    optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=hparams["lr"])
 
     if hparams["criterion"] == "dice":
         criterion = DiceLoss()
@@ -60,6 +60,11 @@ def main():
         criterion = CombinedDiceBCELoss()
     else:
         raise ValueError(f"{hparams['criterion']} is not a valid criterion function")
+
+    # Print trainable parameters
+    if accelerator.is_main_process:
+        for name, param in model.named_parameters():
+            print(f"{name}, requires grad: {param.requires_grad}")
 
     # Pass everything through accelerator
     model, image_processor, optimizer, train_loader, val_loader, test_loader = accelerator.prepare(

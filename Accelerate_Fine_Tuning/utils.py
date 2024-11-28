@@ -6,7 +6,7 @@ import logging
 import argparse
 import yaml
 import torch
-
+import shutil
 
 # Helper classes
 class DiceLoss(nn.Module):
@@ -56,10 +56,11 @@ def load_hyperparameters(yaml_file):
     parser.add_argument("--data_folder", type=str, required=False)
     parser.add_argument("--experiment_name", type=str, required=False)
     parser.add_argument("--epochs", type=int, required=False)
-    parser.add_argument("--freeze_classifier", type=bool, required=False)
-    parser.add_argument("--freeze_encoder", type=bool, required=False)
-    parser.add_argument("--freeze_decoder", type=bool, required=False)
+    parser.add_argument("--freeze_classifier", type=str, required=False)
+    parser.add_argument("--freeze_pixel_module", type=str, required=False)
+    parser.add_argument("--freeze_transformer_decoder", type=str, required=False)
     parser.add_argument("--lr", type=float, required=False)
+    parser.add_argument("--num_labels", type=int, required=False)
 
     args = parser.parse_args()
 
@@ -78,16 +79,13 @@ def load_hyperparameters(yaml_file):
 def freeze_and_prepare(model, accelerator, hparams):
     # Freeze some layers in the model if wanted
     for name, param in model.named_parameters():
-        if hparams["freeze_classifier"]:
+        if hparams["freeze_classifier"] == "True":
             if "class_predictor" in name:
                 param.requires_grad = False
-        elif hparams["freeze_pixel_encoder"]:
-            if "pixel_level_module.encoder":
+        elif hparams["freeze_pixel_module"] == "True":
+            if "pixel_level_module" in name:
                 param.requires_grad = False
-        elif hparams["freeze_pixel_decoder"]:
-            if "pixel_level_module.decoder" in name:
-                param.requires_grad = False
-        elif hparams["freeze_transformer_decoder"]:
+        elif hparams["freeze_transformer_decoder"] == "True":
             if "transformer_module.decoder" in name:
                 param.requires_grad = False
         else:
@@ -103,22 +101,23 @@ def freeze_and_prepare(model, accelerator, hparams):
         print(f"Trainable parameters represent {(num_trainable_params / total_params) * 100}% of total")
 
 
-def setup_experiment_directories(experiment_dir, accelerator):
+def setup_experiment_directories(experiment_dir, accelerator, hparam_file):
     logs_path = os.path.join(experiment_dir, "training.log")
 
     # Create experiment folder
     if accelerator.is_main_process:
         os.makedirs(experiment_dir, exist_ok=True)
         if not os.path.exists(logs_path):
-            with open(logs_path, "x") as f:
-                pass
+            with open(logs_path, "w") as f:
+                f.write(" ")
         print(f"Results and checkpoints will be saved to {experiment_dir}")
 
     # Set up logging
-    log_file = os.path.join(experiment_dir, "training.log")
-    logging.basicConfig(handlers=[logging.FileHandler(log_file)], level=logging.INFO,
-                        format='%(asctime)s %(levelname)s: %(message)s',
-                        datefmt='%Y-%m-%d %H:%M:%S')
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S', handlers=[logging.FileHandler(logs_path)])
+
+    # Copy hparams to project dir for future reference
+    shutil.copy(hparam_file, experiment_dir)
 
 
 def calculate_iou_infer(pred, target):
@@ -177,10 +176,10 @@ def crop_black_borders(image, threshold):
 def preprocess_image(image_path, target_size=(128,128), threshold=30):
     # Crop black borders
     image = Image.open(image_path).convert("RGB")
-    cropped_image = crop_black_borders(image, threshold)
+    #cropped_image = crop_black_borders(image, threshold)
 
     # Resize to target size
-    resized_image = cropped_image.resize(target_size, Image.BICUBIC)
+    resized_image = image.resize(target_size, Image.BICUBIC)
 
     return resized_image
 
