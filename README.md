@@ -2,7 +2,15 @@
 
 This project demonstrates a tissue segmentation pipeline built using the **Mask2Former model** from Facebook AI. It performs binary segmentation on medical imaging data from Huron Pathalogy, distinguishing between the background and tissue regions.
 
+## Metrics Acheived
+
+- Mean IoU: 0.8032
+- Mean Dice: 0.8721
+- Mean Pixel Accuracy: 0.9743
+  
 # For Graders:
+
+
 
 ### Note. notebooks are already executed. Results can be observed without running them again if desired.
 
