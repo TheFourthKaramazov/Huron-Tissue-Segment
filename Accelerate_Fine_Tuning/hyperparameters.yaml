@@ -1,14 +1,19 @@
+# Basic hyperparameter configuration for mask2former fine-tuning
+# Parameters below are chose as a result of hyperparameter tuning
+
 seed: 2002
-lr: 0.0001
-weight_decay: 0.0013032347
-smooth: 0.31038665868329945
-threshold_zero_loss: 21
-batch_size: 6
-border_threshold: 30
-epochs: 20
+
+# Save and data folders
 data_folder: Huron_data
 experiment_name: test
-criterion: dice
-freeze_classifier: False
-freeze_pixel_module: False
-freeze_transformer_decoder: False
+
+# Training parameters
+lr: 0.0001
+weight_decay: 0.0013032347
+batch_size: 6
+epochs: 50
+
+# Loss parameters
+smooth: 0.31038665868329945
+threshold_zero_loss: 21
+

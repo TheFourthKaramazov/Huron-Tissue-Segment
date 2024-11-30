@@ -8,7 +8,7 @@ data/
 # ignore models -> too large to push with git
 models/
 
-# ignore everything in accelerate fine tune except for python
+# ignore everything in accelerate fine tune except for python, yaml
 Accelerate_Fine_Tuning/*
 !Accelerate_Fine_Tuning/*.py
 !Accelerate_Fine_Tuning/*.yaml

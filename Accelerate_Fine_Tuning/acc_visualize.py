@@ -9,10 +9,10 @@ import matplotlib.pyplot as plt
 # System librairies
 import os
 # Project classes/functions
-from custom_dataset import TissueDataset
+from acc_custom_dataset import TissueDataset
 from transformers import Mask2FormerForUniversalSegmentation
 import torch.nn.functional as F
-from model import create_mask2former
+from acc_model import create_mask2former
 
 import matplotlib.pyplot as plt
 import torch
