@@ -16,15 +16,15 @@ def create_mask2former(num_labels=2):
     # Load the image processor with relevant settings
     image_processor = Mask2FormerImageProcessor.from_pretrained(
         "facebook/mask2former-swin-base-IN21k-ade-semantic",
-        do_rescale=False,
+        do_rescale=True,
         do_normalize=False,
-        do_resize=False
+        do_resize=True
     )
 
     # Load the Mask2Former model for binary segmentation
     model = Mask2FormerForUniversalSegmentation.from_pretrained(
         "facebook/mask2former-swin-base-IN21k-ade-semantic",
-        num_labels=num_labels,  # Binary segmentation (background and tissue)
+        num_labels=2,  # Binary segmentation (background and tissue)
         ignore_mismatched_sizes=True  # Allow resizing of model parameters if dimensions do not match
     )
 

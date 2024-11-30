@@ -20,12 +20,12 @@ def train(accelerator, model, train_loader, val_loader, criterion, optimizer, ep
             tissue_logits = outputs.masks_queries_logits[:, 1]
 
             # Resize logits to match masks
-            tissue_logits_resized = F.interpolate(
+            tissue_logits_resized = torch.sigmoid(F.interpolate(
                 tissue_logits.unsqueeze(1),  # Add channel dimension
                 size=masks.shape[-2:],  # Match mask size
                 mode="bilinear",
                 align_corners=False
-            ).squeeze(1)  # Remove channel dimension
+            ))
 
             # Zero gradients
             optimizer.zero_grad()
@@ -86,7 +86,7 @@ def validate(accelerator, model, val_loader, criterion):
                 size=ground_truth_masks.shape[-2:],  # Match mask size
                 mode="bilinear",
                 align_corners=False
-            ).squeeze(1))  # Remove channel dimension
+            ))
 
             # Compute loss
             loss = criterion(tissue_logits_resized, ground_truth_masks)
@@ -141,7 +141,7 @@ def test(accelerator, model, test_loader, criterion):
                 size=ground_truth_masks.shape[-2:],  # Match mask size
                 mode="bilinear",
                 align_corners=False
-            ).squeeze(1))  # Remove channel dimension
+            ))
 
             # Compute loss
             loss = criterion(tissue_logits_resized, ground_truth_masks)

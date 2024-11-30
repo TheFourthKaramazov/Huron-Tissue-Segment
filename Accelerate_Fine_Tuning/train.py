@@ -10,6 +10,7 @@ from model import clear_model_and_cache, create_mask2former
 from utils import *
 from trainer import train, test
 from custom_dataset import prepare_dataloaders
+from loss import *
 
 def main():
     # Initialize accelerator
@@ -32,7 +33,7 @@ def main():
     torch.manual_seed(hparams["seed"])
 
     # Create model and image processor
-    image_processor, model = create_mask2former(hparams["num_labels"])
+    image_processor, model = create_mask2former()
 
     # Freeze required layers and print model parameters
     freeze_and_prepare(model, accelerator, hparams)
@@ -42,7 +43,7 @@ def main():
     mask_folder = os.path.join(hparams["data_folder"], "Sliced_masks")
 
     # Prepare data and get dataloaders
-    train_loader, val_loader, test_loader = prepare_dataloaders(image_folder, mask_folder, hparams, image_processor)
+    train_loader, val_loader = prepare_dataloaders(image_folder, mask_folder, hparams, image_processor)
 
     # Directory to save to
     experiment_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -52,14 +53,8 @@ def main():
     setup_experiment_directories(experiment_dir, accelerator, hparam_file)
 
     # Create criterion, optimizer
-    optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=hparams["lr"])
-
-    if hparams["criterion"] == "dice":
-        criterion = DiceLoss()
-    elif hparams["criterion"] == "bce_dice":
-        criterion = CombinedDiceBCELoss()
-    else:
-        raise ValueError(f"{hparams['criterion']} is not a valid criterion function")
+    optimizer = optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=hparams["lr"], weight_decay=hparams["weight_decay"])
+    criterion = ScaledDiceLoss(smooth=hparams["smooth"], threshold_zero_loss=hparams["threshold_zero_loss"])
 
     # Print trainable parameters
     if accelerator.is_main_process:
@@ -67,18 +62,14 @@ def main():
             print(f"{name}, requires grad: {param.requires_grad}")
 
     # Pass everything through accelerator
-    model, image_processor, optimizer, train_loader, val_loader, test_loader = accelerator.prepare(
-        model, image_processor, optimizer, train_loader, val_loader, test_loader
-    )
+    model, image_processor, optimizer, train_loader, val_loader = accelerator.prepare(
+        model, image_processor, optimizer, train_loader, val_loader)
 
     # Run training
     train(accelerator, model,
           train_loader, val_loader, criterion,
           optimizer, hparams["epochs"], experiment_dir)
     image_processor.save_pretrained(experiment_dir)
-
-    # Final test
-    test(accelerator, model, test_loader, criterion)
 
 
 if __name__ == "__main__":
