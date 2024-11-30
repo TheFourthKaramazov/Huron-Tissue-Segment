@@ -15,7 +15,7 @@ This project demonstrates a tissue segmentation pipeline built using the **Mask2
 
 ### Note. notebooks are already executed. Results can be observed without running them again if desired.
 
-### 1. Clone entire repository (example notebooks rely on python files)
+### 1. Clone entire repository and pip install dependencies outlined below. (example notebooks rely on python files)
 
 ### 2. Refer to *usage_example.ipynb* for full model training. Execute each cell one after another. (dataset is divided by 50 so training will be fast)
 
