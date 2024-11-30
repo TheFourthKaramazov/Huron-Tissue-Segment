@@ -1,5 +1,6 @@
 # System libraries
 import os
+import sys
 import shutil
 import logging
 
@@ -10,7 +11,8 @@ from tqdm import tqdm
 import numpy as np
 
 # Project libraries
-from ..loss import calculate_dice_infer, calculate_iou_infer
+sys.path.append('..')
+from loss import calculate_dice_infer, calculate_iou_infer
 
 
 def calculate_metrics(output, target):

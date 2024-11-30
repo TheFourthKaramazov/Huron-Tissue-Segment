@@ -9,10 +9,12 @@ import os
 
 # Project classes/functions
 from accelerate_trainer import train
-from ..preprocess import create_dataloaders
-from ..model_config import *
-from ..utils import load_hyperparameters, setup_experiment_directories
-from ..loss import ScaledDiceLoss
+
+sys.path.append('..')
+from preprocess import create_dataloaders
+from model_config import *
+from utils import load_hyperparameters, setup_experiment_directories
+from loss import ScaledDiceLoss
 
 
 def main():
@@ -48,7 +50,7 @@ def main():
     mask_folder = os.path.join(hparams["data_folder"], "Sliced_masks")
 
     # Prepare data and get dataloaders
-    train_loader, val_loader = create_dataloaders(image_folder, mask_folder, hparams["batch_size"], image_processor)
+    train_loader, val_loader, _, _, _ = create_dataloaders(image_folder, mask_folder, hparams["batch_size"], image_processor)
 
     # Directory to save to
     experiment_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)),

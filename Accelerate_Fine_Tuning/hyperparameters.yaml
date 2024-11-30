@@ -6,6 +6,7 @@ seed: 2002
 # Save and data folders
 data_folder: Huron_data
 experiment_name: test
+mask2former_path: facebook/mask2former-swin-base-IN21k-ade-semantic
 
 # Training parameters
 lr: 0.0001
