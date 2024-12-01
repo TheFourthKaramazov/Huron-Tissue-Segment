@@ -44,6 +44,9 @@ def main():
     # Freeze required layers and print model parameters
     if accelerator.is_main_process:
         print_trainable_layers(model)
+        train_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        frozen_params = sum(p.numel() for p in model.parameters() if not p.requires_grad)
+        print(f"Number of trainable parameters: {train_params}, number of frozen parameters: {frozen_params}")
 
     # Define paths
     image_folder = os.path.join(hparams["data_folder"], "Sliced_Images")

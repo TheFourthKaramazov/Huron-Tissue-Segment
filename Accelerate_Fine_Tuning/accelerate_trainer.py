@@ -53,14 +53,15 @@ def calculate_metrics(output, target):
 
 
 def train(accelerator, model, train_loader, val_loader, criterion, optimizer, epochs, experiment_dir):
-    model.train()
     best_iou = 0.0
-    running_loss = 0.0
-    running_iou = 0.0
-    running_dice = 0.0
-    running_pixel_acc = 0.0
 
     for epoch in range(epochs):
+        model.train()
+        running_loss = 0.0
+        running_iou = 0.0
+        running_dice = 0.0
+        running_pixel_acc = 0.0
+
         for pixel_values, masks in tqdm(train_loader, desc=f"Epoch [{epoch + 1}/{epochs}] Training",
                                         disable=not accelerator.is_main_process):
 
@@ -105,11 +106,11 @@ def train(accelerator, model, train_loader, val_loader, criterion, optimizer, ep
         if accelerator.is_main_process:
             logging.info(
                 f"Epoch [{epoch + 1}/{epochs}], Training Loss: {avg_train_loss:.4f},"
-                f" IoU: {avg_train_iou}, Dice: {avg_train_dice},"
-                f" Pixel Accuracy: {avg_train_pixel_accuracy}.")
+                f" IoU: {avg_train_iou:.4f}, Dice: {avg_train_dice:.4f},"
+                f" Pixel Accuracy: {avg_train_pixel_accuracy:.4f}.")
             logging.info(f"Epoch [{epoch + 1}/{epochs}],"
                          f" Validation Loss: {avg_val_loss:.4f}, IoU: {avg_val_iou:.4f},"
-                         f" Dice: {avg_val_dice:.4f}, Pixel Accuracy: {avg_val_pixel_accuracy}")
+                         f" Dice: {avg_val_dice:.4f}, Pixel Accuracy: {avg_val_pixel_accuracy:.4f}")
 
             best_iou = save_best_checkpoint(accelerator, model, experiment_dir, avg_val_iou, best_iou)
 
