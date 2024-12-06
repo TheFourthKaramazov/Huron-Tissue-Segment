@@ -133,7 +133,7 @@ mask_transform = transforms.Compose([
 
 
 def create_dataloaders(image_folder, mask_folder, batch_size=16, image_processor=None, mask_transform=mask_transform,
-                       image_transform=image_transform, divide=1):
+                       divide=1):
     """
     Create train and validation DataLoaders.
 
@@ -174,7 +174,3 @@ def create_dataloaders(image_folder, mask_folder, batch_size=16, image_processor
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
     return train_loader, val_loader, dataset, image_files, mask_files
-
-
-
-
