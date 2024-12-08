@@ -2,8 +2,7 @@
 .venv/
 .idea/
 
-# ignore data except the huron_data_link.txt file
-data/
+
 
 # ignore models -> too large to push with git
 models/
