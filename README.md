@@ -10,8 +10,11 @@ This project demonstrates a tissue segmentation pipeline built using the **Mask2
   
 # For Graders:
 
-### Final Trained model download link: https://drive.google.com/drive/u/0/folders/1wkDIpGP2fKGhlVAzf2Dlss1oPjg1KJUO
+## Final Trained model download link: https://drive.google.com/drive/u/0/folders/1wkDIpGP2fKGhlVAzf2Dlss1oPjg1KJUO
 
+## SAMPLE DATASET INCLUDED IN REPOSITORY: SIMPLY CLONE ENTIRE REPOSITORY 
+
+## SAMPLE DATSET FUNCTIONS WITH `example_inference_SAMPLE_DATASET.ipynb`. ALL OTHER SCRIPTS REQUIRE FULL DATASET FOUND IN data/link folder
 
 ### Note. notebooks are already executed. Results can be observed without running them again if desired.
 
