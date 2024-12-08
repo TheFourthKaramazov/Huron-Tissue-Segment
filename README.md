@@ -14,7 +14,7 @@ This project demonstrates a tissue segmentation pipeline built using the **Mask2
 
 ## SAMPLE DATASET INCLUDED IN REPOSITORY: SIMPLY CLONE ENTIRE REPOSITORY 
 
-## SAMPLE DATSET FUNCTIONS WITH `example_inference_SAMPLE_DATASET.ipynb`. ALL OTHER SCRIPTS REQUIRE FULL DATASET FOUND IN data/link folder
+## SAMPLE DATSET FUNCTIONS WITH `example_inference_SAMPLE_DATASET.ipynb`. ALL OTHER SCRIPTS REQUIRE FULL DATASET FOUND IN data/link folder. ENSURE MODEL IS DOWNLOADED FROM GOOGLE LINK IN CURRENT WORKING DIRECTORY UNDER models/
 
 ### Note. notebooks are already executed. Results can be observed without running them again if desired.
 
