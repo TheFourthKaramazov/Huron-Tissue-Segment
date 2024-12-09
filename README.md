@@ -10,13 +10,13 @@ This project demonstrates a tissue segmentation pipeline built using the **Mask2
   
 # For Graders:
 
-## Final Trained model download link: [https://drive.google.com/drive/u/0/folders/1wkDIpGP2fKGhlVAzf2Dlss1oPjg1KJUO](https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing](https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing)
+## Final Trained model download link: [https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing](https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing)
 
 ## SAMPLE DATASET INCLUDED IN REPOSITORY: SIMPLY CLONE ENTIRE REPOSITORY 
 
 ## SAMPLE DATSET FUNCTIONS WITH `example_inference_SAMPLE_DATASET.ipynb`. ALL OTHER SCRIPTS REQUIRE FULL DATASET FOUND IN data/link folder. ENSURE MODEL IS DOWNLOADED FROM GOOGLE LINK IN CURRENT WORKING DIRECTORY UNDER models/
 
-### Note. notebooks are already executed. Results can be observed without running them again if desired.
+### Note: notebooks are already executed. Results can be observed without running them again if desired.
 
 ### 1. Clone entire repository and pip install dependencies outlined below. (example notebooks rely on python files)
 
@@ -43,11 +43,11 @@ This project demonstrates a tissue segmentation pipeline built using the **Mask2
 
 ### Install Dependencies
 
-Ensure you have the required libraries installed. Use the following dependencies: `matplotlib`, `torch`, `numpy`, `tqdm`, `Pillow`, `torchvision`, `transformers`, `gc`, `os`. You can install these dependencies using pip:
+Ensure you have the required libraries installed. Use the following dependencies: `matplotlib`, `torch`, `numpy`, `tqdm`, `Pillow`, `torchvision`, `transformers`, `gc`, `os`, `scipy`. You can install these dependencies using pip:
 
 ```
 bash
-pip install matplotlib torch numpy tqdm Pillow torchvision transformers 
+pip install matplotlib torch numpy tqdm Pillow torchvision transformers scipy 
 ```
 
 ### Dataset Structure
