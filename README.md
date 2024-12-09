@@ -10,7 +10,7 @@ This project demonstrates a tissue segmentation pipeline built using the **Mask2
   
 # For Graders:
 
-## Final Trained model download link: https://drive.google.com/drive/u/0/folders/1wkDIpGP2fKGhlVAzf2Dlss1oPjg1KJUO](https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing
+## Final Trained model download link: [https://drive.google.com/drive/u/0/folders/1wkDIpGP2fKGhlVAzf2Dlss1oPjg1KJUO](https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing](https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing)
 
 ## SAMPLE DATASET INCLUDED IN REPOSITORY: SIMPLY CLONE ENTIRE REPOSITORY 
 
