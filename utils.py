@@ -43,6 +43,17 @@ def load_model_and_processor(save_dir):
 
 
 def setup_experiment_directories(experiment_dir, hparam_file):
+    """
+    Set up the directory structure and logging for an experiment.
+
+    Args:
+        experiment_dir: Path to the directory where experiment results, logs, and checkpoints will be stored.
+        hparam_file: Path to the hyperparameter file to be copied to the experiment directory for reference.
+
+    Returns:
+        None
+    """
+    
     logs_path = os.path.join(experiment_dir, "training.log")
 
     # Create experiment folder
@@ -58,7 +69,28 @@ def setup_experiment_directories(experiment_dir, hparam_file):
 
 
 def load_hyperparameters(yaml_file):
-    # Parse command-line arguments
+    """
+    Load and optionally override hyperparameters from a YAML file and command-line arguments.
+
+    Args:
+        yaml_file: Path to the YAML file containing the default hyperparameters.
+
+    Returns:
+        dict: A dictionary of hyperparameters with optional overrides from command-line arguments.
+
+    Command-line Arguments:
+        --hparams (str): Path to the hyperparameters YAML file (required).
+        --seed (int): Random seed for reproducibility (optional).
+        --data_folder (str): Path to the dataset folder (optional).
+        --experiment_name (str): Name of the experiment (optional).
+        --lr (float): Learning rate (optional).
+        --weight_decay (float): Weight decay for the optimizer (optional).
+        --batch_size (int): Batch size for training (optional).
+        --epochs (int): Number of training epochs (optional).
+        --smooth (float): Smoothing parameter (optional).
+        --threshold_zero_loss (int): Threshold for zero-loss filtering (optional).
+    """
+    
     parser = argparse.ArgumentParser(description="Arguments to fine-tune Mask2Former")
     parser.add_argument("--hparams", type=str, required=True)
     parser.add_argument("--seed", type=int, required=False)
