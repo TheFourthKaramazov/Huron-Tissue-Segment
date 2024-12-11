@@ -2,11 +2,23 @@
 
 This project demonstrates a tissue segmentation pipeline built using the **Mask2Former model** from Facebook AI. It performs binary segmentation on medical imaging data from Huron Pathalogy, distinguishing between the background and tissue regions.
 
+## Metrics Acheived
+
+- Mean IoU: 0.8032
+- Mean Dice: 0.8721
+- Mean Pixel Accuracy: 0.9743
+  
 # For Graders:
 
-### Note. notebooks are already executed. Results can be observed without running them again if desired.
+## Final Trained model download link: [https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing](https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing)
 
-### 1. Clone entire repository (example notebooks rely on python files)
+## SAMPLE DATASET INCLUDED IN REPOSITORY: SIMPLY CLONE ENTIRE REPOSITORY 
+
+## SAMPLE DATSET FUNCTIONS WITH `example_inference_SAMPLE_DATASET.ipynb`. ALL OTHER SCRIPTS REQUIRE FULL DATASET FOUND IN data/link folder. ENSURE MODEL IS DOWNLOADED FROM GOOGLE LINK IN CURRENT WORKING DIRECTORY UNDER models/
+
+### Note: notebooks are already executed. Results can be observed without running them again if desired.
+
+### 1. Clone entire repository and pip install dependencies outlined below. (example notebooks rely on python files)
 
 ### 2. Refer to *usage_example.ipynb* for full model training. Execute each cell one after another. (dataset is divided by 50 so training will be fast)
 
@@ -31,11 +43,11 @@ This project demonstrates a tissue segmentation pipeline built using the **Mask2
 
 ### Install Dependencies
 
-Ensure you have the required libraries installed. Use the following dependencies: `matplotlib`, `torch`, `numpy`, `tqdm`, `Pillow`, `torchvision`, `transformers`, `gc`, `os`. You can install these dependencies using pip:
+Ensure you have the required libraries installed. Use the following dependencies: `matplotlib`, `torch`, `numpy`, `tqdm`, `Pillow`, `torchvision`, `transformers`, `gc`, `os`, `scipy`. You can install these dependencies using pip:
 
 ```
 bash
-pip install matplotlib torch numpy tqdm Pillow torchvision transformers 
+pip install matplotlib torch numpy tqdm Pillow torchvision transformers scipy 
 ```
 
 ### Dataset Structure
@@ -83,8 +95,39 @@ JUSTIN FILL IN HERE
 
 ### Accelerated Training 
 
-BRIAC FILL IN HERE
+The files in Accelerate_Fine_Tuning are built to train the Mask2Former model on Hugging Face's [Accelerate library](https://huggingface.co/docs/accelerate/v0.3.0/index.html). This allows users to run multi-GPU training easily. Below are the steps to set up and execute the script. The following steps assume you have already followed the steps for general training, including installing the dependencies and downloading the dataset. 
 
+#### Additional Dependencies
+
+For this code you will only need to install `Accelerate` and `pyyaml`. You can install them as follows:
+```
+pip install accelerate pyyaml
+```
+
+#### Accelerator setup
+
+To use Accelerate, you typically need to run `accelerate config` and select from a series of options. You may do this if you prefer but in the Accelerate directory, there is a default_config.yaml that can be used (this configuration is tested and is working, if you use a custom configuration, it may break). The only field you may need to change in default_config.yaml is the `num_processes` which is the number of available GPUs. 
+
+#### Hyperparameters
+
+For this script, you will need to create or adapt the hyperparameters.yaml file. Each hyperparameter can be tweaked to your liking. Hyperparameters can also be overwritten from the command line using `--hyperparameter_name value`. 
+
+#### Running the script
+
+Now that everything is setup, you can run the training script. Use the following command if you are using the default_config.yaml: 
+
+```
+accelerate launch --config_file default_config.yaml accelerate_train.py --hparams hyperparameters.yaml --data_folder path/to/data --other args
+```
+
+The training log and model checkpoints will be saved as follows:
+```
+results/
+├── seed/
+│   ├── training.log         # Training log with loss, dice, IOU and pixel accuracy per epoch
+│   ├── best_iou_checkpoint/ # Folder with saved model checkpoint
+│   ├── hyperparameters.yaml # Hyperparameters used for this experiment
+```
 
 ## Requirements
 
