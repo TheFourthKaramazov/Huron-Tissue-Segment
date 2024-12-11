@@ -53,6 +53,23 @@ def calculate_metrics(output, target):
 
 
 def train(accelerator, model, train_loader, val_loader, criterion, optimizer, epochs, experiment_dir):
+    """
+    Train a deep learning model for image segmentation with monitoring and checkpointing using Accelerate.
+
+    Args:
+        accelerator: A distributed training accelerator for managing multi-GPU or multi-process setups.
+        model: The neural network model to be trained.
+        train_loader: DataLoader for the training dataset, yielding batches of pixel values and masks.
+        val_loader: DataLoader for the validation dataset, yielding batches of pixel values and masks.
+        criterion: Loss function used to compute the error between predictions and ground truth.
+        optimizer: Optimizer used to update the model parameters.
+        epochs: Number of training epochs.
+        experiment_dir: Directory where model checkpoints and logs will be saved.
+
+    Returns:
+        None
+    """
+    
     best_iou = 0.0
 
     for epoch in range(epochs):
@@ -120,15 +137,16 @@ def validate(accelerator, model, val_loader, criterion):
     Validation function aligned with inference logic, including IoU and Dice metric calculation.
 
     Args:
-        accelerator: The accelerator object.
-        model: The trained segmentation model.
-        val_loader: DataLoader providing validation images and ground truth masks.
-        criterion: Loss function for evaluation.
+        accelerator: A distributed training accelerator for managing multi-GPU or multi-process setups.
+        model: The neural network model to be trained.
+        val_loader: DataLoader for the validation dataset, yielding batches of pixel values and masks.
+        criterion: Loss function used to compute the error between predictions and ground truth.
 
     Returns:
         avg_val_loss: Average validation loss.
-        avg_iou: Average IoU across the validation set.
-        avg_dice: Average Dice score across the validation set.
+        avg_val_iou: Average IoU across the validation set.
+        avg_val_dice: Average Dice score across the validation set.
+        avg_val_pixel_accuracy: Average pixel accuracy across the validation set.
     """
     model.eval()
     val_loss = 0.0
@@ -179,7 +197,20 @@ def validate(accelerator, model, val_loader, criterion):
 
 
 def save_best_checkpoint(accelerator, model, experiment_dir, iou, best_iou):
-    # Save new checkpoint when IOU increases
+    """
+    Save the model checkpoint if the validation Intersection over Union (IoU) improves.
+
+    Args:
+        accelerator: A distributed training accelerator for managing multi-GPU or multi-process setups.
+        model: The neural network model whose state should be saved.
+        experiment_dir: Directory where model checkpoints are stored.
+        iou: The current validation IoU score.
+        best_iou: The best IoU score observed so far.
+
+    Returns:
+        float: The updated best IoU score.
+    """
+    
     if iou > best_iou:
         for file in os.listdir(experiment_dir):
             if file == "best_iou_checkpoint.pt":
