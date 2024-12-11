@@ -90,8 +90,15 @@ The project uses the **Mask2Former pretrained model** (`facebook/mask2former-swi
 
 ### Hyper-parameter Tuning
 
-JUSTIN FILL IN HERE
+The hyperparameter tuning script is uses `optuna`, a popular optimization library, to fine tune a few hyperparameters. This is done by creating a *study* which runs multiple trials sequentially. In each trial, the `objective` function
+is ran and returns the mIoU which is what is then used to assess the performance of a trial. This can take a while to run depending on the number of trials, epochs, and the size of the train subset used.
 
+To install optuna, you can run 
+```
+pip install optuna
+```
+
+Finally, simply make sure you have dataset downloaded into the root folder using the dataset structure shown above.
 
 ### Accelerated Training 
 
