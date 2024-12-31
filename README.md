@@ -7,28 +7,20 @@ This project demonstrates a tissue segmentation pipeline built using the **Mask2
 - Mean IoU: 0.8032
 - Mean Dice: 0.8721
 - Mean Pixel Accuracy: 0.9743
-  
-# For Graders:
 
-## Final Trained model download link: [https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing](https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing)
+## Trained model download link: [https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing](https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing)
 
-## SAMPLE DATASET INCLUDED IN REPOSITORY: SIMPLY CLONE ENTIRE REPOSITORY 
+## SAMPLE inferencing dataset included in repository
 
-## SAMPLE DATSET FUNCTIONS WITH `example_inference_SAMPLE_DATASET.ipynb`. ALL OTHER SCRIPTS REQUIRE FULL DATASET FOUND IN data/link folder. ENSURE MODEL IS DOWNLOADED FROM GOOGLE LINK IN CURRENT WORKING DIRECTORY UNDER models/
-
-### Note: notebooks are already executed. Results can be observed without running them again if desired.
+## SAMPLE DATSET FUNCTIONS WITH `example_inference_SAMPLE_DATASET.ipynb`. All other usage and training scripts require full dataset.
 
 ### 1. Clone entire repository and pip install dependencies outlined below. (example notebooks rely on python files)
 
-### 2. Refer to *usage_example.ipynb* for full model training. Execute each cell one after another. (dataset is divided by 50 so training will be fast)
+### 2. Refer to *usage_example.ipynb* for full model training. (dataset is divided by 50 so training will be fast)
 
-### 3. Refer to *example_usage_google_colab.ipynb* for training on full dataset with grid search parameters which resulted in best performing model. (8 hours training time on L4 GPU)
+### 3. Refer to *example_usage_google_colab.ipynb* for training on full dataset of 20k images (8 hours training time on L4 GPU)
 
-### 4. Refer to *example_inference_only.ipynb* for inferencing only.  Execute each cell one after another. Model is the result of step 3. above and must be downloaded from google link (too large for github). Ensure path and name correpond to loading script.
-
-### 5. Both scripts plot final results for comparison of original image, predicted mask, ground-truth mask for evaluation.(Files must be opened to see)
-
-### 6. All notebooks rely on data being downloaded and set according to the dataset structure outlined below (google colab notebook for full model training relys mounted drive, refer to corresponding file)
+### 4. Refer to *example_inference_only.ipynb* for inferencing only.  
 
 
 
