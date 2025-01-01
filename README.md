@@ -10,19 +10,6 @@ This project demonstrates a tissue segmentation pipeline built using the **Mask2
 
 ## Trained model download link: [https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing](https://drive.google.com/drive/folders/1-041y6yOD-oFiB2gl0ltAiOwN2Ul0drQ?usp=sharing)
 
-## SAMPLE inferencing dataset included in repository
-
-## SAMPLE DATSET FUNCTIONS WITH `example_inference_SAMPLE_DATASET.ipynb`. All other usage and training scripts require full dataset.
-
-### 1. Clone entire repository and pip install dependencies outlined below. (example notebooks rely on python files)
-
-### 2. Refer to *usage_example.ipynb* for full model training. (dataset is divided by 50 so training will be fast)
-
-### 3. Refer to *example_usage_google_colab.ipynb* for training on full dataset of 20k images (8 hours training time on L4 GPU)
-
-### 4. Refer to *example_inference_only.ipynb* for inferencing only.  
-
-
 
 ## Features
 
